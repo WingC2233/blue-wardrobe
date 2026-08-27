@@ -395,6 +395,12 @@ function showTab(name, btn) {
   if (btn) btn.classList.add('active');
 }
 
+
+function imgFallback(el) {
+  const emoji = el.getAttribute('data-emoji') || '👕';
+  el.outerHTML = '<span class="emoji">' + emoji + '</span>';
+}
+
 function init() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
@@ -531,7 +537,7 @@ function renderAll() {
   grid.innerHTML = wardrobe.length ? wardrobe.map((item, idx) => {
     const used = planOutfits.some(o => o.items && Object.values(o.items).includes(idx));
     const visual = item.photo
-      ? `<img src="${item.photo}">`
+      ? `<img src="${item.photo}" data-emoji="${item.emoji || '👕'}" onerror="imgFallback(this)">`
       : `<span class="emoji">${item.emoji || '👕'}</span>`;
     return `<div class="w-item ${used?'used':''}">
       <span class="delete" onclick="deleteItem(${idx})">✕</span>
@@ -634,7 +640,7 @@ function renderPlan() {
       const item = items[itemIdx % items.length];
       inner += `<div class="doll-item">
         ${item.photo
-          ? `<img src="${item.photo}">`
+          ? `<img src="${item.photo}" data-emoji="${item.emoji || '👕'}" onerror="imgFallback(this)">`
           : `<span class="emoji">${item.emoji || '👕'}</span>`}
         <div class="label">${item.name}</div>
         <button class="btn btn-ghost btn-sm change-btn" onclick="changeItem(${idx},'${cat}')">🔄 換</button>
