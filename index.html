@@ -13,144 +13,176 @@ body {
   color: #1a3a5c;
   padding: 20px;
 }
-.container { max-width: 1000px; margin: 0 auto; }
+.container { max-width: 760px; margin: 0 auto; }
 
 /* Header */
-header { text-align: center; padding: 35px 20px 25px; }
+header { text-align: center; padding: 30px 20px 20px; }
 header h1 {
-  font-size: 2.3em;
+  font-size: 2em;
   background: linear-gradient(135deg, #1a6fc4, #4da8f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
-header p { color: #6b8db5; }
-.header-emoji { font-size: 2.8em; display: block; margin-bottom: 8px; }
+header p { color: #6b8db5; font-size: 0.95em; }
 
-/* Tabs */
-.tabs {
-  display: flex; gap: 6px; margin: 20px auto;
-  justify-content: center; background: #fff; padding: 6px;
-  border-radius: 50px; max-width: 620px;
-  box-shadow: 0 4px 20px rgba(26,111,196,0.1);
-  flex-wrap: wrap;
+/* Card (Aimi 風格 — 白卡片分隔) */
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 20px rgba(26,111,196,0.07);
+  border: 1px solid #e8f2fd;
 }
-.tab-btn {
-  flex: 1; padding: 11px 16px; border: none; border-radius: 40px;
-  background: transparent; color: #6b8db5; font-size: 0.92em;
-  font-weight: 600; cursor: pointer; transition: all 0.3s;
-  min-width: 110px;
+.card h3 {
+  font-size: 1.1em;
+  color: #1a3a5c;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.tab-btn.active {
-  background: linear-gradient(135deg, #1a6fc4, #4da8f7);
-  color: #fff; box-shadow: 0 4px 15px rgba(26,111,196,0.3);
+.card h3 .icon { font-size: 1.3em; }
+
+/* 行程設定 */
+.trip-form { display: flex; flex-direction: column; gap: 14px; }
+.form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.form-field { flex: 1; min-width: 120px; }
+.form-field label { display: block; font-size: 0.78em; color: #6b8db5; font-weight: 600; margin-bottom: 5px; }
+.form-field input {
+  width: 100%; font-family: inherit; font-size: 0.95em; padding: 11px 14px;
+  border-radius: 12px; border: 2px solid #d8e8f8; background: #f7fbff;
+  color: #1a3a5c; outline: none; transition: all 0.3s;
+}
+.form-field input:focus { border-color: #4da8f7; background: #fff; box-shadow: 0 0 0 4px rgba(77,168,247,0.1); }
+
+/* 色系偏好 */
+.color-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.color-dot {
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+  border: 3px solid transparent; transition: all 0.2s;
+}
+.color-dot.selected { border-color: #1a6fc4; transform: scale(1.12); box-shadow: 0 0 0 3px rgba(26,111,196,0.15); }
+.custom-color-input { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.custom-color-input input {
+  flex: 1; min-width: 140px; font-family: inherit; font-size: 0.85em; padding: 9px 12px;
+  border-radius: 10px; border: 2px solid #d8e8f8; background: #f7fbff; color: #1a3a5c; outline: none;
+}
+.custom-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #eef7ff; color: #1a6fc4; padding: 4px 12px;
+  border-radius: 16px; font-size: 0.8em; font-weight: 600; cursor: pointer; margin: 3px;
+}
+.custom-tag:hover { background: #d6e9fb; }
+
+/* 行李件數 */
+.count-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.count-item {
+  display: flex; align-items: center; gap: 6px;
+  background: #f7fbff; padding: 8px 12px; border-radius: 12px;
+  border: 1px solid #e8f2fd;
+}
+.count-item label { font-size: 0.8em; font-weight: 600; color: #4a6f94; }
+.count-item input {
+  width: 52px; padding: 5px 8px; border-radius: 8px;
+  border: 2px solid #d8e8f8; font-size: 0.9em; text-align: center; outline: none;
 }
 
-/* Panels */
-.panel { display: none; background: #fff; border-radius: 24px; padding: 28px;
-  box-shadow: 0 8px 40px rgba(26,111,196,0.08); border: 1px solid #e8f2fd; }
-.panel.active { display: block; animation: fadeIn 0.4s ease; }
-@keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:none;} }
-h2 { margin-bottom: 18px; font-size: 1.45em; color: #1a3a5c; }
-h3 { margin: 20px 0 12px; font-size: 1.1em; color: #4a6f94; }
-.section-divider { border: none; border-top: 1px dashed #d8e8f8; margin: 20px 0; }
-
-/* Form */
-.input-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
-.input-group input, .input-group select {
-  font-family: inherit; font-size: 0.95em; padding: 11px 15px;
-  border-radius: 13px; border: 2px solid #d8e8f8; background: #f7fbff;
-  color: #1a3a5c; flex: 1; min-width: 90px; outline: none; transition: all 0.3s;
-}
-.input-group input:focus, .input-group select:focus {
-  border-color: #4da8f7; background: #fff; box-shadow: 0 0 0 4px rgba(77,168,247,0.1);
-}
-.input-group label { font-size: 0.85em; color: #4a6f94; font-weight: 600; white-space: nowrap; }
+/* 按鈕 */
 .btn {
-  font-family: inherit; font-size: 0.92em; padding: 11px 20px; border: none;
-  border-radius: 13px; cursor: pointer; font-weight: 600; transition: all 0.3s;
+  font-family: inherit; font-size: 0.92em; padding: 12px 22px; border: none;
+  border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s;
 }
-.btn-primary { background: linear-gradient(135deg,#1a6fc4,#4da8f7); color:#fff; box-shadow: 0 4px 15px rgba(26,111,196,0.25); }
-.btn-primary:hover { transform: translateY(-2px); }
+.btn-primary {
+  background: linear-gradient(135deg,#1a6fc4,#4da8f7); color:#fff;
+  box-shadow: 0 4px 15px rgba(26,111,196,0.25); width: 100%;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,111,196,0.35); }
 .btn-ghost { background: #eaf4ff; color: #1a6fc4; }
 .btn-ghost:hover { background: #d6e9fb; }
 .btn-danger { background: #fee8e8; color: #d64040; }
-.btn-danger:hover { background: #fdd4d4; }
-.btn-sm { padding: 7px 14px; font-size: 0.85em; border-radius: 10px; }
+.btn-sm { padding: 8px 14px; font-size: 0.82em; border-radius: 10px; }
 
-/* Summary */
-.summary-box {
-  background: linear-gradient(135deg,#eef7ff,#e3f1fe); border-radius: 16px;
-  padding: 16px 18px; margin: 12px 0; border: 1px solid #c8e2fa; color: #1a3a5c; font-weight: 500;
+/* 紙娃娃 */
+.doll-card {
+  background: #f7fbff; border-radius: 16px; padding: 18px;
+  margin-bottom: 12px; border: 1px solid #e8f2fd;
 }
-.badge {
-  display: inline-block; background: #fff; color: #1a6fc4;
-  padding: 4px 13px; border-radius: 20px; font-size: 0.78em;
-  font-weight: 600; margin: 3px; box-shadow: 0 2px 8px rgba(26,111,196,0.1);
+.doll-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
 }
-
-/* Items */
-.items-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(145px,1fr)); gap: 13px; margin-top: 12px; }
-.item-card {
-  background: #f7fbff; border-radius: 17px; padding: 16px 10px; text-align: center;
-  transition: all 0.3s; border: 2px solid #e8f2fd; position: relative; cursor: pointer;
-}
-.item-card:hover { transform: translateY(-3px); border-color: #4da8f7; box-shadow: 0 8px 25px rgba(26,111,196,0.1); }
-.item-card .emoji { font-size: 2.6em; display: block; margin-bottom: 7px; filter: drop-shadow(0 3px 6px rgba(26,111,196,0.12)); }
-.item-card .name { font-size: 0.88em; font-weight: 700; }
-.item-card .tag { font-size: 0.73em; opacity: 0.65; display: block; margin-top: 4px; }
-.item-card .delete { position: absolute; top: 7px; right: 9px; opacity: 0.4; font-size: 0.9em; cursor: pointer; }
-.item-card .delete:hover { opacity: 1; }
-.item-card.used { opacity: 0.55; border-style: dashed; }
-
-/* Outfit / 紙娃娃 */
-.outfit-card {
-  background: #f7fbff; border-radius: 18px; padding: 20px; margin-bottom: 14px;
-  border: 1px solid #e8f2fd; transition: all 0.3s;
-}
-.outfit-card:hover { box-shadow: 0 4px 15px rgba(26,111,196,0.08); }
-.outfit-card .day { font-weight: 700; font-size: 1.05em; margin-bottom: 12px; color: #1a6fc4; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.day-label { display: flex; align-items: center; gap: 8px; }
-.day-dot { width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg,#1a6fc4,#4da8f7); display: inline-block; }
-.outfit-card .clothes { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
-.outfit-item { text-align: center; min-width: 58px; }
-.outfit-item .emoji { font-size: 2.1em; display: block; margin-bottom: 5px; }
-.outfit-item .label { font-size: 0.73em; color: #4a6f94; font-weight: 500; }
-.outfit-item .change-btn { font-size: 0.7em; margin-top: 5px; }
-.outfit-desc { margin-top: 10px; width: 100%; }
-.outfit-desc textarea {
-  width: 100%; font-family: inherit; font-size: 0.85em; padding: 9px 12px;
+.doll-day { font-weight: 700; font-size: 1.05em; color: #1a6fc4; }
+.doll-actions { display: flex; gap: 6px; }
+.doll-body { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+.doll-item { text-align: center; min-width: 56px; }
+.doll-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; display: block; margin: 0 auto 4px; }
+.doll-item .emoji { font-size: 2em; display: block; margin-bottom: 4px; }
+.doll-item .label { font-size: 0.72em; color: #4a6f94; font-weight: 500; }
+.doll-item .change-btn { font-size: 0.68em; margin-top: 4px; padding: 5px 10px; }
+.doll-desc { margin-top: 12px; }
+.doll-desc textarea {
+  width: 100%; font-family: inherit; font-size: 0.82em; padding: 8px 12px;
   border-radius: 10px; border: 2px solid #d8e8f8; background: #fff; color: #1a3a5c;
-  resize: vertical; min-height: 45px; outline: none;
+  resize: vertical; min-height: 40px; outline: none;
 }
-.outfit-tip { margin-top: 8px; font-size: 0.82em; color: #6b8db5; background: #eaf4ff; padding: 7px 12px; border-radius: 10px; display: inline-block; }
 
-/* 色系偏好 */
-.color-prefs { display: flex; gap: 8px; flex-wrap: wrap; margin: 5px 0 10px; }
-.color-dot {
-  width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
-  border: 3px solid transparent; transition: all 0.2s;
+/* 本次行李 */
+.luggage-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.luggage-item {
+  background: #eef7ff; border-radius: 12px; padding: 8px 14px;
+  font-size: 0.85em; font-weight: 600; color: #1a6fc4;
+  display: flex; align-items: center; gap: 5px;
 }
-.color-dot.selected { border-color: #1a6fc4; transform: scale(1.15); box-shadow: 0 0 0 3px rgba(26,111,196,0.15); }
 
-/* 行李件數 */
-.count-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 6px 0; }
-.count-item { display: flex; align-items: center; gap: 6px; background: #f7fbff; padding: 7px 12px; border-radius: 12px; border: 1px solid #e8f2fd; }
-.count-item label { font-size: 0.8em; font-weight: 600; }
-.count-item input { width: 55px; padding: 5px 8px; border-radius: 8px; border: 2px solid #d8e8f8; font-size: 0.9em; text-align: center; }
+/* 衣櫃 */
+.wardrobe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 12px; }
+.w-item {
+  background: #f7fbff; border-radius: 14px; padding: 12px 8px; text-align: center;
+  transition: all 0.3s; border: 2px solid #e8f2fd; position: relative;
+}
+.w-item:hover { transform: translateY(-3px); border-color: #4da8f7; box-shadow: 0 6px 20px rgba(26,111,196,0.1); }
+.w-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; display: block; margin: 0 auto 6px; }
+.w-item .emoji { font-size: 2.4em; display: block; margin-bottom: 5px; }
+.w-item .name { font-size: 0.82em; font-weight: 700; display: block; }
+.w-item .tag { font-size: 0.7em; opacity: 0.65; display: block; margin-top: 3px; }
+.w-item .delete { position: absolute; top: 6px; right: 8px; opacity: 0.4; font-size: 0.85em; cursor: pointer; }
+.w-item .delete:hover { opacity: 1; }
+.w-item.used { opacity: 0.55; border-style: dashed; }
+.upload-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #eaf4ff; color: #1a6fc4; padding: 9px 16px;
+  border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 0.88em;
+  transition: all 0.3s;
+}
+.upload-btn:hover { background: #d6e9fb; }
 
-/* Trip record */
+/* 穿搭記錄 */
 .trip-card {
-  background: #f7fbff; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+  background: #f7fbff; border-radius: 14px; padding: 14px; margin-bottom: 10px;
   border: 1px solid #e8f2fd; cursor: pointer; transition: all 0.3s;
 }
 .trip-card:hover { border-color: #4da8f7; box-shadow: 0 4px 15px rgba(26,111,196,0.1); }
-.trip-card .trip-title { font-weight: 700; margin-bottom: 6px; color: #1a3a5c; }
-.trip-card .trip-meta { font-size: 0.82em; color: #6b8db5; }
+.trip-title { font-weight: 700; margin-bottom: 4px; }
+.trip-meta { font-size: 0.8em; color: #6b8db5; }
 
-footer { text-align: center; margin-top: 25px; color: #a3bfd9; font-size: 0.8em; padding-bottom: 20px; }
-.empty-msg { text-align: center; color: #a3bfd9; padding: 40px; }
+/* Toast */
+
+.tab-btn {
+  flex:1; padding:12px 16px; border:none; border-radius:40px;
+  background:transparent; color:#6b8db5; font-size:0.95em;
+  font-weight:600; cursor:pointer; transition:all 0.3s;
+}
+.tab-btn.active {
+  background:linear-gradient(135deg,#1a6fc4,#4da8f7);
+  color:#fff; box-shadow:0 4px 15px rgba(26,111,196,0.3);
+}
+.tab-content { display:none; }
+.tab-content.active { display:block; animation:fadeIn 0.4s ease; }
+@keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:none;} }
+
 .toast {
   position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
   background: #1a3a5c; color: #fff; padding: 12px 24px; border-radius: 30px;
@@ -158,108 +190,149 @@ footer { text-align: center; margin-top: 25px; color: #a3bfd9; font-size: 0.8em;
   box-shadow: 0 8px 30px rgba(0,0,0,0.2);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+footer { text-align: center; margin-top: 20px; color: #a3bfd9; font-size: 0.78em; padding-bottom: 20px; }
+.empty-msg { text-align: center; color: #a3bfd9; padding: 30px; font-size: 0.9em; }
 @media (max-width: 600px) {
   body { padding: 12px; }
-  header h1 { font-size: 1.6em; }
-  .panel { padding: 18px; }
-  .tabs { max-width: 100%; }
-  .tab-btn { min-width: 80px; font-size: 0.8em; padding: 10px 8px; }
+  .card { padding: 18px; }
+  .form-field { min-width: 100%; }
 }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <span class="header-emoji">🌊</span>
-    <h1>藍色旅遊衣櫃</h1>
+    <h1>🌊 藍色旅遊衣櫃</h1>
     <p>快速決定穿什麼、帶什麼！</p>
   </header>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('planner', this)">🧳 穿搭規劃</button>
-    <button class="tab-btn" onclick="showTab('wardrobe', this)">👗 衣櫃總覽</button>
-    <button class="tab-btn" onclick="showTab('records', this)">📷 穿搭記錄</button>
+  <!-- Tabs -->
+  <div style="display:flex;gap:6px;margin:18px 0;justify-content:center;background:#fff;padding:6px;border-radius:50px;box-shadow:0 4px 20px rgba(26,111,196,0.1)">
+    <button class="tab-btn active" onclick="showTab('tab_plan', this)">🧳 穿搭規劃</button>
+    <button class="tab-btn" onclick="showTab('tab_wardrobe', this)">👗 衣櫃總覽</button>
+    <button class="tab-btn" onclick="showTab('tab_records', this)">📷 穿搭記錄</button>
   </div>
 
-  <!-- 穿搭規劃 -->
-  <div id="planner" class="panel active">
-    <h2>🧳 出國穿搭規劃</h2>
-    <div class="input-group">
-      <label>目的地</label>
-      <input type="text" id="destination" placeholder="例：東京">
-      <label>出發日期</label>
-      <input type="date" id="startDate">
-      <label>天數</label>
-      <input type="number" id="days" min="1" max="30" value="5" style="max-width:80px">
-      <label>溫度 °C</label>
-      <input type="number" id="tempInput" value="22" style="max-width:80px">
-    </div>
+  <!-- Tab: 穿搭規劃 -->
+  <div id="tab_plan" class="tab-content active">
+  <!-- 🧳 行程設定 -->
+  <div class="card">
+    <h3><span class="icon">🧳</span> 行程設定</h3>
+    <div class="trip-form">
+      <div class="form-row">
+        <div class="form-field">
+          <label>目的地</label>
+          <input type="text" id="destination" placeholder="例：東京">
+        </div>
+        <div class="form-field">
+          <label>出發日期</label>
+          <input type="date" id="startDate">
+        </div>
+        <div class="form-field" style="min-width:70px">
+          <label>天數</label>
+          <input type="number" id="days" min="1" max="30" value="5">
+        </div>
+        <div class="form-field" style="min-width:70px">
+          <label>溫度 °C</label>
+          <input type="number" id="tempInput" value="22">
+        </div>
+      </div>
 
-    <h3>🎨 色系偏好</h3>
-    <div class="color-prefs" id="colorPrefs"></div>
-    <div class="input-group" style="margin-bottom:10px">
-      <input type="text" id="customColor" placeholder="自己輸入色系（例：牛仔藍、薄荷綠）" style="flex:2">
-      <button class="btn btn-ghost btn-sm" onclick="addCustomColor()">➕ 加入</button>
-    </div>
-    <div id="customColorTags" style="margin-bottom:10px"></div>
+      <div>
+        <label style="font-size:0.78em;color:#6b8db5;font-weight:600;display:block;margin-bottom:8px">🎨 色系偏好</label>
+        <div class="color-row" id="colorPrefs"></div>
+        <div class="custom-color-input">
+          <input type="text" id="customColor" placeholder="自己輸入色系（例：牛仔藍）">
+          <button class="btn btn-ghost btn-sm" onclick="addCustomColor()">➕ 加入</button>
+        </div>
+        <div id="customColorTags" style="margin-top:6px"></div>
+      </div>
 
-    <h3>🧳 行李件數</h3>
-    <div class="count-row" id="countRow"></div>
+      <div>
+        <label style="font-size:0.78em;color:#6b8db5;font-weight:600;display:block;margin-bottom:8px">🧳 行李件數</label>
+        <div class="count-grid" id="countRow"></div>
+      </div>
 
-    <div class="input-group" style="margin-top:15px">
       <button class="btn btn-primary" onclick="generatePlan()">✨ 產生穿搭建議</button>
-      <button class="btn btn-ghost" onclick="clearPlan()">🗑️ 清空</button>
     </div>
-    <div id="planResult"></div>
   </div>
 
-  <!-- 衣櫃總覽 -->
-  <div id="wardrobe" class="panel">
-    <h2>👗 衣櫃總覽</h2>
-    <div class="input-group">
-      <input type="text" id="itemName" placeholder="衣物名稱（例：藍色牛仔褲）">
-      <select id="itemCategory">
-        <option value="上衣">上衣</option><option value="下身">下身</option>
-        <option value="鞋子">鞋子</option><option value="外套">外套</option>
-        <option value="包包">包包</option><option value="飾品">飾品</option>
-        <option value="其他">其他</option>
-      </select>
-      <input type="text" id="itemColor" placeholder="顏色" style="max-width:80px">
-      <label class="upload-label" style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:13px;background:#eaf4ff;color:#1a6fc4;font-weight:600;cursor:pointer;font-size:0.92em">
-        📷 上傳相片
+  <!-- 🎎 每日紙娃娃 -->
+  <div id="planSection" style="display:none">
+    <div class="card">
+      <h3><span class="icon">🎎</span> 每日紙娃娃</h3>
+      <div id="planResult"></div>
+    </div>
+
+    <!-- 🧳 本次行李 -->
+    <div class="card">
+      <h3><span class="icon">🧳</span> 本次行李</h3>
+      <div id="luggageList" class="luggage-row"></div>
+    </div>
+  </div>
+
+  </div><!-- /tab_plan -->
+
+  <!-- Tab: 衣櫃總覽 -->
+  <div id="tab_wardrobe" class="tab-content">
+  <!-- 👗 衣櫃總覽 -->
+  <div class="card">
+    <h3><span class="icon">👗</span> 衣櫃總覽</h3>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-field" style="flex:2">
+        <input type="text" id="itemName" placeholder="衣物名稱（例：藍色牛仔褲）">
+      </div>
+      <div class="form-field" style="min-width:80px">
+        <select id="itemCategory" style="width:100%;font-family:inherit;font-size:0.92em;padding:10px 12px;border-radius:12px;border:2px solid #d8e8f8;background:#f7fbff;color:#1a3a5c;outline:none">
+          <option value="上衣">上衣</option><option value="下身">下身</option>
+          <option value="鞋子">鞋子</option><option value="外套">外套</option>
+          <option value="包包">包包</option><option value="飾品">飾品</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      <div class="form-field" style="min-width:70px">
+        <input type="text" id="itemColor" placeholder="顏色">
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px;align-items:center">
+      <label class="upload-btn">📷 上傳相片
         <input type="file" id="itemPhoto" accept="image/*" style="display:none" onchange="previewPhoto(event)">
       </label>
-      <button class="btn btn-primary" onclick="addItem()">➕ 新增</button>
+      <button class="btn btn-primary" style="width:auto;flex:1" onclick="addItem()">➕ 新增衣物</button>
     </div>
     <div id="photoPreview" style="display:none;margin-bottom:10px">
-      <img id="photoPreviewImg" style="width:70px;height:70px;object-fit:cover;border-radius:12px;border:2px solid #4da8f7">
+      <img id="photoPreviewImg" style="width:64px;height:64px;object-fit:cover;border-radius:10px;border:2px solid #4da8f7">
       <button class="btn btn-ghost btn-sm" onclick="clearPhoto()" style="margin-left:8px">✕ 移除</button>
     </div>
 
-    <div class="summary-box">
+    <div style="font-size:0.85em;color:#6b8db5;margin-bottom:12px">
       📊 總共 <b id="totalCount">0</b> 件衣物
-      <div id="categoryStats" style="margin-top:7px"></div>
+      <div id="categoryStats" style="margin-top:6px"></div>
     </div>
 
-    <div id="wardrobeGrid2" class="items-grid"></div>
+    <div id="wardrobeGrid" class="wardrobe-grid"></div>
 
-    <hr class="section-divider">
-    <h3>🔄 資料管理</h3>
-    <div class="input-group">
-      <button class="btn btn-ghost" onclick="exportData()">💾 匯出</button>
-      <button class="btn btn-ghost" onclick="importData()">📥 匯入</button>
-      <button class="btn btn-ghost" onclick="undoReset()">↩️ 還原</button>
-      <button class="btn btn-danger" onclick="resetData()">🗑️ 重置</button>
+    <div class="form-row" style="margin-top:16px">
+      <button class="btn btn-ghost btn-sm" onclick="exportData()">💾 匯出</button>
+      <button class="btn btn-ghost btn-sm" onclick="importData()">📥 匯入</button>
+      <button class="btn btn-ghost btn-sm" onclick="undoReset()">↩️ 還原</button>
+      <button class="btn btn-danger btn-sm" onclick="resetData()">🗑️ 重置</button>
     </div>
-    <p style="font-size:0.8em;color:#a3bfd9;margin-top:6px">🔒 資料只會存喺你嘅瀏覽器，唔會上傳。</p>
+    <p style="font-size:0.75em;color:#a3bfd9;margin-top:8px">🔒 資料只會存喺你嘅瀏覽器</p>
   </div>
 
-  <!-- 穿搭記錄 -->
-  <div id="records" class="panel">
-    <h2>📷 穿搭記錄</h2>
-    <p style="color:#6b8db5;margin-bottom:18px">真實旅行穿搭靈感，分享俾你作為打包規劃參考！</p>
+  </div><!-- /tab_wardrobe -->
+
+  <!-- Tab: 穿搭記錄 -->
+  <div id="tab_records" class="tab-content">
+  <!-- 📷 穿搭記錄 -->
+  <div class="card">
+    <h3><span class="icon">📷</span> 穿搭記錄</h3>
+    <p style="font-size:0.85em;color:#6b8db5;margin-bottom:14px">真實旅行穿搭靈感，參考打包規劃！</p>
     <div id="tripList"></div>
   </div>
+
+  </div><!-- /tab_records -->
 
   <footer>🌊 Blue Wardrobe · 資料只存在你嘅瀏覽器</footer>
 </div>
@@ -267,9 +340,12 @@ footer { text-align: center; margin-top: 25px; color: #a3bfd9; font-size: 0.8em;
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
 
 <script>
-// ===== 狀態 =====
 let wardrobe = [];
 let planOutfits = [];
+let currentPhotoData = '';
+let customColors = [];
+let lastBackup = null;
+
 const STORAGE_KEY = 'blue_wardrobe_data';
 const PLAN_KEY = 'blue_wardrobe_plan';
 
@@ -281,7 +357,6 @@ const COLORS = [
   { name:'黃', hex:'#f5c542' }, { name:'紫', hex:'#8e7cc3' },
 ];
 let selectedColors = ['藍','天藍','白','米白'];
-let customColors = [];
 
 const COUNT_CATEGORIES = [
   { key:'上衣', label:'上衣', def:4 },
@@ -305,20 +380,21 @@ const DEFAULT_ITEMS = [
   { name:'藍色連身裙', category:'下身', emoji:'👗', color:'藍色' },
   { name:'運動短褲', category:'下身', emoji:'🩳', color:'深藍' },
   { name:'針織開衫', category:'外套', emoji:'🧶', color:'天藍' },
-  { name:'淺藍襯衫', category:'上衣', emoji:'👕', color:'淺藍' },
-  { name:'米白長褲', category:'下身', emoji:'👖', color:'米白' },
-  { name:'小白鞋', category:'鞋子', emoji:'👟', color:'白色' },
-  { name:'草帽', category:'飾品', emoji:'👒', color:'米白' },
 ];
 
-// 示範旅行記錄
 const TRIPS = [
-  { title:'🇯🇵 東京 5日4夜', meta:'2026年3月 · 春天賞櫻 · 10-15°C', days:'Day 1 淺草 · Day 2 澀谷 · Day 3 迪士尼 · Day 4 鎌倉 · Day 5 回程', emojis:'🧥👖👟🎒' },
+  { title:'🇯🇵 東京 5日4夜', meta:'2026年3月 · 賞櫻 · 10-15°C', days:'Day 1 淺草 · Day 2 澀谷 · Day 3 迪士尼 · Day 4 鎌倉 · Day 5 回程', emojis:'🧥👖👟🎒' },
   { title:'🇹🇭 曼谷 4日3夜', meta:'2025年11月 · 水燈節 · 28-32°C', days:'Day 1 夜市 · Day 2 水上市場 · Day 3 大皇宮 · Day 4 回程', emojis:'👕🩳🩴🕶️' },
   { title:'🇳🇿 紐西蘭南島自駕 15日', meta:'2025年1月 · 夏天 · 15-25°C', days:'冰川健行 · 皇后鎮 · 螢火蟲洞 · 峽灣', emojis:'🧥👖👟🎒🧢' },
 ];
 
-// ===== 初始化 =====
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
 function init() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
@@ -334,7 +410,6 @@ function init() {
   renderAll();
   renderPlan();
 }
-
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(wardrobe)); }
 function savePlan() { localStorage.setItem(PLAN_KEY, JSON.stringify(planOutfits)); }
 
@@ -346,14 +421,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function showTab(name, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(name).classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-// ===== 色系偏好 =====
+/* 色系 */
 function renderColorPrefs() {
   const box = document.getElementById('colorPrefs');
   box.innerHTML = COLORS.map(c =>
@@ -361,16 +429,13 @@ function renderColorPrefs() {
          style="background:${c.hex}" title="${c.name}"
          onclick="toggleColor('${c.name}')"></div>`
   ).join('');
+  renderCustomColorTags();
 }
 function toggleColor(name) {
-  if (selectedColors.includes(name)) {
-    selectedColors = selectedColors.filter(c => c !== name);
-  } else {
-    selectedColors.push(name);
-  }
+  if (selectedColors.includes(name)) selectedColors = selectedColors.filter(c => c !== name);
+  else selectedColors.push(name);
   renderColorPrefs();
 }
-
 function addCustomColor() {
   const input = document.getElementById('customColor').value.trim();
   if (!input) { showToast('⚠️ 請輸入顏色'); return; }
@@ -378,30 +443,24 @@ function addCustomColor() {
     customColors.push(input);
     if (!selectedColors.includes(input)) selectedColors.push(input);
     document.getElementById('customColor').value = '';
-    renderCustomColorTags();
     renderColorPrefs();
     showToast(`✅ 已加入「${input}」`);
-  } else {
-    showToast('⚠️ 呢個色已經加咗');
-  }
+  } else showToast('⚠️ 呢個色已經加咗');
 }
-
 function removeCustomColor(name) {
   customColors = customColors.filter(c => c !== name);
   selectedColors = selectedColors.filter(c => c !== name);
-  renderCustomColorTags();
   renderColorPrefs();
 }
-
 function renderCustomColorTags() {
   const box = document.getElementById('customColorTags');
   if (!box) return;
   box.innerHTML = customColors.map(c =>
-    `<span class="badge" style="cursor:pointer;background:#eef7ff" onclick="removeCustomColor('${c}')">${c} ✕</span>`
+    `<span class="custom-tag" onclick="removeCustomColor('${c}')">${c} ✕</span>`
   ).join('');
 }
 
-// ===== 行李件數 =====
+/* 行李件數 */
 function renderCountRow() {
   const box = document.getElementById('countRow');
   box.innerHTML = COUNT_CATEGORIES.map(c =>
@@ -411,37 +470,16 @@ function renderCountRow() {
 }
 function getCounts() {
   const counts = {};
-  COUNT_CATEGORIES.forEach(c => {
-    counts[c.key] = parseInt(document.getElementById(`count_${c.key}`).value) || 0;
-  });
+  COUNT_CATEGORIES.forEach(c => { counts[c.key] = parseInt(document.getElementById(`count_${c.key}`).value) || 0; });
   return counts;
 }
 
-// ===== 衣櫃 =====
-function addItem() {
-  const name = document.getElementById('itemName').value.trim();
-  const category = document.getElementById('itemCategory').value;
-  const color = document.getElementById('itemColor').value.trim();
-  if (!name) { showToast('⚠️ 請輸入衣物名稱！'); return; }
-  const photo = currentPhotoData || '';
-  wardrobe.push({ name, category, photo, color });
-  save();
-  document.getElementById('itemName').value='';
-  document.getElementById('itemColor').value='';
-  clearPhoto();
-  renderAll();
-  showToast('✅ 已新增');
-}
-
-// ===== 相片上傳 =====
-let currentPhotoData = '';
-
+/* 相片 */
 function previewPhoto(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (ev) => {
-    // 壓縮圖片（避免 localStorage 爆）
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -463,27 +501,39 @@ function previewPhoto(e) {
   };
   reader.readAsDataURL(file);
 }
-
 function clearPhoto() {
   currentPhotoData = '';
   document.getElementById('photoPreview').style.display = 'none';
   document.getElementById('itemPhoto').value = '';
 }
 
+/* 衣櫃 */
+function addItem() {
+  const name = document.getElementById('itemName').value.trim();
+  const category = document.getElementById('itemCategory').value;
+  const color = document.getElementById('itemColor').value.trim();
+  if (!name) { showToast('⚠️ 請輸入衣物名稱！'); return; }
+  wardrobe.push({ name, category, photo: currentPhotoData || '', color });
+  save();
+  document.getElementById('itemName').value='';
+  document.getElementById('itemColor').value='';
+  clearPhoto();
+  renderAll();
+  showToast('✅ 已新增');
+}
 function deleteItem(index) {
   wardrobe.splice(index, 1);
   save();
   renderAll();
 }
-
 function renderAll() {
-  const grid2 = document.getElementById('wardrobeGrid2');
-  grid2.innerHTML = wardrobe.length ? wardrobe.map((item, idx) => {
+  const grid = document.getElementById('wardrobeGrid');
+  grid.innerHTML = wardrobe.length ? wardrobe.map((item, idx) => {
     const used = planOutfits.some(o => o.items && Object.values(o.items).includes(idx));
     const visual = item.photo
-      ? `<img src="${item.photo}" style="width:70px;height:70px;object-fit:cover;border-radius:12px;display:block;margin:0 auto 7px">`
+      ? `<img src="${item.photo}">`
       : `<span class="emoji">${item.emoji || '👕'}</span>`;
-    return `<div class="item-card ${used?'used':''}">
+    return `<div class="w-item ${used?'used':''}">
       <span class="delete" onclick="deleteItem(${idx})">✕</span>
       ${visual}
       <span class="name">${item.name}</span>
@@ -491,22 +541,19 @@ function renderAll() {
       ${used?'<span class="tag" style="color:#1a6fc4">✓ 已用</span>':''}
     </div>`;
   }).join('') : '<div class="empty-msg">未有衣物，新增啦～</div>';
-
   document.getElementById('totalCount').textContent = wardrobe.length;
   const cats = {};
   wardrobe.forEach(i => { cats[i.category] = (cats[i.category]||0)+1; });
   document.getElementById('categoryStats').innerHTML = Object.entries(cats)
-    .map(([c,n]) => `<span class="badge">${c} × ${n}</span>`).join('');
+    .map(([c,n]) => `<span class="badge" style="display:inline-block;background:#fff;color:#1a6fc4;padding:3px 12px;border-radius:14px;font-size:0.78em;font-weight:600;margin:3px;box-shadow:0 2px 6px rgba(26,111,196,0.08)">${c} × ${n}</span>`).join('');
 }
 
-// ===== 生成計劃 =====
+/* 生成計劃 */
 function generatePlan() {
   const dest = document.getElementById('destination').value.trim() || '旅行';
   const days = parseInt(document.getElementById('days').value) || 5;
-  const temp = document.getElementById('tempInput') ? parseInt(document.getElementById('tempInput').value) : 22;
-  const counts = getCounts();
+  const temp = parseInt(document.getElementById('tempInput').value) || 22;
 
-  // 按色系偏好篩選衣物
   let pool = wardrobe.filter(i => selectedColors.some(c => (i.color||'').includes(c)));
   if (pool.length < 3) pool = wardrobe;
 
@@ -542,7 +589,9 @@ function generatePlan() {
     });
   }
   savePlan();
+  document.getElementById('planSection').style.display = 'block';
   renderPlan();
+  renderLuggage();
   showToast(`✨ ${dest} ${days}日穿搭建議已產生！`);
 }
 
@@ -552,54 +601,40 @@ function renderPlan() {
     result.innerHTML = '<div class="empty-msg">未產生計劃 — 設定好行程，撳「產生穿搭建議」！</div>';
     return;
   }
-  const dest = document.getElementById('destination').value.trim() || '旅行';
-  const counts = getCounts();
-  let html = `<div class="summary-box">
-    🌍 <b>${dest}</b> · ${planOutfits.length} 日 · 色系偏好：${selectedColors.join('/')}
-  </div>`;
-
+  let html = '';
   planOutfits.forEach((o, idx) => {
-    const items = [];
-    for (const [cat, itemIdx] of Object.entries(o.items)) {
-      if (itemIdx === null || itemIdx === undefined) continue;
-      // 搵返實際 item（用全局 index 唔啱，要重新計）
-    }
-    // 簡化：直接用當日物件
-    html += `<div class="outfit-card" id="outfit_${idx}">
-      <div class="day">
-        <span class="day-label"><span class="day-dot"></span> Day ${o.day}</span>
-        <div>
+    html += `<div class="doll-card">
+      <div class="doll-head">
+        <span class="doll-day">Day ${o.day}</span>
+        <div class="doll-actions">
           <button class="btn btn-ghost btn-sm" onclick="downloadOutfit(${idx})">📸 下載</button>
           <button class="btn btn-danger btn-sm" onclick="removeDay(${idx})">✕</button>
         </div>
       </div>
-      <div class="clothes" id="clothes_${idx}"></div>
-      <div class="outfit-desc">
+      <div class="doll-body" id="clothes_${idx}"></div>
+      <div class="doll-desc">
         <textarea placeholder="行程描述：例如 Day 1 淺草行，行街為主..." oninput="updateDesc(${idx}, this.value)">${o.desc||''}</textarea>
       </div>
     </div>`;
   });
-
-  html += `<div class="input-group" style="margin-top:15px">
-    <button class="btn btn-ghost" onclick="window.print()">🖨️ 列印 / 存 PDF</button>
-    <button class="btn btn-ghost" onclick="exportPlan()">📤 匯出計劃</button>
+  html += `<div class="form-row" style="margin-top:12px">
+    <button class="btn btn-ghost" onclick="window.print()" style="flex:1">🖨️ 列印 / 存 PDF</button>
+    <button class="btn btn-ghost" onclick="clearPlan()" style="flex:1">🗑️ 清空</button>
   </div>`;
   result.innerHTML = html;
 
-  // 填入每件衫
   planOutfits.forEach((o, idx) => {
     const box = document.getElementById(`clothes_${idx}`);
     if (!box) return;
-    const catMap = { '上衣':'上衣','下身':'下身','鞋子':'鞋子','外套':'外套','包包':'包包','飾品':'飾品' };
     let inner = '';
     for (const [cat, itemIdx] of Object.entries(o.items)) {
       if (itemIdx === null || itemIdx === undefined) continue;
       const items = wardrobe.filter(i => i.category === cat);
       if (!items.length) continue;
       const item = items[itemIdx % items.length];
-      inner += `<div class="outfit-item">
+      inner += `<div class="doll-item">
         ${item.photo
-          ? `<img src="${item.photo}" style="width:52px;height:52px;object-fit:cover;border-radius:10px;display:block;margin:0 auto 4px">`
+          ? `<img src="${item.photo}">`
           : `<span class="emoji">${item.emoji || '👕'}</span>`}
         <div class="label">${item.name}</div>
         <button class="btn btn-ghost btn-sm change-btn" onclick="changeItem(${idx},'${cat}')">🔄 換</button>
@@ -609,39 +644,51 @@ function renderPlan() {
   });
 }
 
+function renderLuggage() {
+  const box = document.getElementById('luggageList');
+  if (!planOutfits.length) { box.innerHTML = ''; return; }
+  // 統計計劃用咗幾多件
+  const used = {};
+  planOutfits.forEach(o => {
+    for (const [cat, itemIdx] of Object.entries(o.items)) {
+      if (itemIdx === null || itemIdx === undefined) continue;
+      const items = wardrobe.filter(i => i.category === cat);
+      if (!items.length) continue;
+      const item = items[itemIdx % items.length];
+      used[cat] = (used[cat]||0)+1;
+    }
+  });
+  const counts = getCounts();
+  box.innerHTML = COUNT_CATEGORIES.map(c => {
+    const planned = used[c.key] || 0;
+    const target = counts[c.key] || 0;
+    return `<div class="luggage-item">${c.label} × ${planned}/${target}</div>`;
+  }).join('');
+}
+
 function changeItem(outfitIdx, category) {
   const items = wardrobe.filter(i => i.category === category);
   if (!items.length) { showToast('⚠️ 冇呢類衣物'); return; }
   const current = planOutfits[outfitIdx].items[category] || 0;
-  const next = (current + 1) % items.length;
-  planOutfits[outfitIdx].items[category] = next;
+  planOutfits[outfitIdx].items[category] = (current + 1) % items.length;
   savePlan();
   renderPlan();
+  renderLuggage();
 }
-
-function updateDesc(idx, val) {
-  planOutfits[idx].desc = val;
-  savePlan();
-}
-
-function removeDay(idx) {
-  planOutfits.splice(idx, 1);
-  savePlan();
-  renderPlan();
-}
-
+function updateDesc(idx, val) { planOutfits[idx].desc = val; savePlan(); }
+function removeDay(idx) { planOutfits.splice(idx, 1); savePlan(); renderPlan(); renderLuggage(); }
 function clearPlan() {
   if (confirm('確定清空計劃？')) {
     planOutfits = [];
     localStorage.removeItem(PLAN_KEY);
     renderPlan();
+    renderLuggage();
+    document.getElementById('planSection').style.display = 'none';
   }
 }
-
 function downloadOutfit(idx) {
   const outfit = planOutfits[idx];
   if (!outfit) return;
-  // 用 canvas 畫一張透明底 PNG
   const canvas = document.createElement('canvas');
   canvas.width = 600; canvas.height = 500;
   const ctx = canvas.getContext('2d');
@@ -650,24 +697,27 @@ function downloadOutfit(idx) {
   ctx.font = 'bold 28px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(`🌊 Day ${outfit.day}`, 300, 50);
-
   let y = 130;
   for (const [cat, itemIdx] of Object.entries(outfit.items)) {
     if (itemIdx === null || itemIdx === undefined) continue;
     const items = wardrobe.filter(i => i.category === cat);
     if (!items.length) continue;
     const item = items[itemIdx % items.length];
+    if (item.photo) {
+      const img = new Image();
+      img.src = item.photo;
+      // 簡單處理：等圖片 load 先畫（簡化版用文字）
+    }
     ctx.font = '64px serif';
     ctx.textAlign = 'center';
-    ctx.fillText(item.emoji, 300, y);
+    ctx.fillText(item.emoji || '👕', 300, y);
     y += 40;
     ctx.font = '20px sans-serif';
     ctx.fillStyle = '#4a6f94';
-    ctx.fillText(item.name + (outfit.desc ? ' · '+outfit.desc.slice(0,20) : ''), 300, y);
+    ctx.fillText(item.name, 300, y);
     ctx.fillStyle = '#1a6fc4';
     y += 80;
   }
-
   const a = document.createElement('a');
   a.href = canvas.toDataURL('image/png');
   a.download = `outfit-day${outfit.day}.png`;
@@ -675,15 +725,7 @@ function downloadOutfit(idx) {
   showToast('📸 已下載 PNG！');
 }
 
-function exportPlan() {
-  const blob = new Blob([JSON.stringify({plan: planOutfits, wardrobe}, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'blue-wardrobe-plan.json';
-  a.click();
-}
-
-// ===== 資料管理 =====
+/* 資料管理 */
 function exportData() {
   const blob = new Blob([JSON.stringify(wardrobe, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
@@ -692,9 +734,7 @@ function exportData() {
   a.click();
   showToast('💾 已匯出');
 }
-
 function importData() { document.getElementById('importFile').click(); }
-
 function handleImport(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -707,22 +747,13 @@ function handleImport(e) {
         save();
         renderAll();
         showToast('✅ 匯入成功！');
-      } else if (data.plan) {
-        planOutfits = data.plan;
-        wardrobe = data.wardrobe;
-        save(); savePlan();
-        renderAll(); renderPlan();
-        showToast('✅ 計劃匯入成功！');
       }
     } catch(err) { showToast('❌ 檔案格式錯誤'); }
   };
   reader.readAsText(file);
 }
-
-// 還原 = 用暫存備份
-let lastBackup = null;
 function resetData() {
-  if (confirm('確定重置衣櫃？所有衣物會刪除（可還原一次）。')) {
+  if (confirm('確定重置衣櫃？')) {
     lastBackup = JSON.stringify(wardrobe);
     wardrobe = [...DEFAULT_ITEMS];
     save();
@@ -737,24 +768,21 @@ function undoReset() {
     save();
     renderAll();
     showToast('↩️ 已還原');
-  } else {
-    showToast('冇嘢可以還原');
-  }
+  } else showToast('冇嘢可以還原');
 }
 
-// ===== 穿搭記錄 =====
+/* 穿搭記錄 */
 function renderTripList() {
   const box = document.getElementById('tripList');
   box.innerHTML = TRIPS.map(t => `
     <div class="trip-card" onclick="showToast('📷 ${t.title} — 參考用')">
       <div class="trip-title">${t.title} ${t.emojis}</div>
       <div class="trip-meta">${t.meta}</div>
-      <div class="trip-meta" style="margin-top:5px">${t.days}</div>
+      <div class="trip-meta" style="margin-top:4px">${t.days}</div>
     </div>
   `).join('');
 }
 
-// 啟動
 init();
 </script>
 </body>
