@@ -286,12 +286,24 @@ footer { text-align: center; margin-top: 20px; color: #a3bfd9; font-size: 0.78em
         <select id="itemCategory" style="width:100%;font-family:inherit;font-size:0.92em;padding:10px 12px;border-radius:12px;border:2px solid #d8e8f8;background:#f7fbff;color:#1a3a5c;outline:none">
           <option value="上衣">上衣</option><option value="下身">下身</option>
           <option value="鞋子">鞋子</option><option value="外套">外套</option>
-          <option value="包包">包包</option><option value="飾品">飾品</option>
+          <option value="包包">包包</option><option value="帽子">帽子</option>
+          <option value="飾品">飾品</option><option value="襪子">襪子</option>
           <option value="其他">其他</option>
         </select>
       </div>
       <div class="form-field" style="min-width:70px">
         <input type="text" id="itemColor" placeholder="顏色">
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-field" style="min-width:80px">
+        <input type="text" id="itemBrand" placeholder="品牌（選填）">
+      </div>
+      <div class="form-field" style="min-width:70px">
+        <input type="number" id="itemPrice" placeholder="價格（選填）">
+      </div>
+      <div class="form-field" style="min-width:70px">
+        <input type="number" id="itemWeight" placeholder="重量g（選填）">
       </div>
     </div>
     <div class="form-row" style="margin-bottom:12px;align-items:center">
@@ -362,9 +374,10 @@ const COUNT_CATEGORIES = [
   { key:'上衣', label:'上衣', def:4 },
   { key:'下身', label:'下身', def:3 },
   { key:'鞋子', label:'鞋子', def:2 },
-  { key:'外套', label:'外套', def:1 },
   { key:'包包', label:'包包', def:1 },
+  { key:'帽子', label:'帽子', def:1 },
   { key:'飾品', label:'飾品', def:1 },
+  { key:'襪子', label:'襪子', def:3 },
 ];
 
 const DEFAULT_ITEMS = [
@@ -518,11 +531,17 @@ function addItem() {
   const name = document.getElementById('itemName').value.trim();
   const category = document.getElementById('itemCategory').value;
   const color = document.getElementById('itemColor').value.trim();
+  const brand = (document.getElementById('itemBrand')||{}).value || '';
+  const price = (document.getElementById('itemPrice')||{}).value || '';
+  const weight = (document.getElementById('itemWeight')||{}).value || '';
   if (!name) { showToast('⚠️ 請輸入衣物名稱！'); return; }
-  wardrobe.push({ name, category, photo: currentPhotoData || '', color });
+  wardrobe.push({ name, category, photo: currentPhotoData || '', color, brand: brand.trim(), price, weight });
   save();
   document.getElementById('itemName').value='';
   document.getElementById('itemColor').value='';
+  document.getElementById('itemBrand').value='';
+  document.getElementById('itemPrice').value='';
+  document.getElementById('itemWeight').value='';
   clearPhoto();
   renderAll();
   showToast('✅ 已新增');
@@ -544,6 +563,9 @@ function renderAll() {
       ${visual}
       <span class="name">${item.name}</span>
       <span class="tag">${item.category}${item.color?' · '+item.color:''}</span>
+      ${item.brand?`<span class="tag">🏷️ ${item.brand}</span>`:''}
+      ${item.price?`<span class="tag">$${item.price}</span>`:''}
+      ${item.weight?`<span class="tag">${item.weight}g</span>`:''}
       ${used?'<span class="tag" style="color:#1a6fc4">✓ 已用</span>':''}
     </div>`;
   }).join('') : '<div class="empty-msg">未有衣物，新增啦～</div>';
@@ -643,7 +665,9 @@ function renderPlan() {
           ? `<img src="${item.photo}" data-emoji="${item.emoji || '👕'}" onerror="imgFallback(this)">`
           : `<span class="emoji">${item.emoji || '👕'}</span>`}
         <div class="label">${item.name}</div>
-        <button class="btn btn-ghost btn-sm change-btn" onclick="changeItem(${idx},'${cat}')">🔄 換</button>
+        <select class="change-select" onchange="setItem(${idx},'${cat}', this.value)" style="font-size:0.7em;margin-top:4px;padding:4px 6px;border-radius:8px;border:1px solid #d8e8f8;background:#fff;color:#1a6fc4;cursor:pointer;max-width:80px">
+          ${items.map((it, i) => `<option value="${i}" ${i === (itemIdx % items.length) ? 'selected' : ''}>${it.name.slice(0,6)}</option>`).join('')}
+        </select>
       </div>`;
     }
     box.innerHTML = inner;
@@ -670,6 +694,13 @@ function renderLuggage() {
     const target = counts[c.key] || 0;
     return `<div class="luggage-item">${c.label} × ${planned}/${target}</div>`;
   }).join('');
+}
+
+function setItem(outfitIdx, category, value) {
+  planOutfits[outfitIdx].items[category] = parseInt(value);
+  savePlan();
+  renderPlan();
+  renderLuggage();
 }
 
 function changeItem(outfitIdx, category) {
