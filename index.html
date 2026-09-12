@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌊 藍色旅遊衣櫃 | Blue Wardrobe</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -326,11 +327,12 @@ footer { text-align: center; margin-top: 20px; color: #a3bfd9; font-size: 0.78em
 
     <div class="form-row" style="margin-top:16px">
       <button class="btn btn-ghost btn-sm" onclick="exportData()">💾 匯出</button>
-      <button class="btn btn-ghost btn-sm" onclick="importData()">📥 匯入</button>
+      <button class="btn btn-ghost btn-sm" onclick="importData()" title="支援 JSON 或 Notion 匯出嘅 ZIP">📥 匯入</button>
       <button class="btn btn-ghost btn-sm" onclick="undoReset()">↩️ 還原</button>
       <button class="btn btn-danger btn-sm" onclick="resetData()">🗑️ 重置</button>
     </div>
     <p style="font-size:0.75em;color:#a3bfd9;margin-top:8px">🔒 資料只會存喺你嘅瀏覽器</p>
+    <p style="font-size:0.75em;color:#a3bfd9;margin-top:4px">💡 匯入支援：JSON 檔（本站匯出）或 Notion 資料庫匯出嘅 ZIP 檔（含 CSV + 圖片）</p>
   </div>
 
   </div><!-- /tab_wardrobe -->
@@ -349,7 +351,7 @@ footer { text-align: center; margin-top: 20px; color: #a3bfd9; font-size: 0.78em
   <footer>🌊 Blue Wardrobe · 資料只存在你嘅瀏覽器</footer>
 </div>
 
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+<input type="file" id="importFile" accept=".json,.zip" style="display:none" onchange="handleImport(event)">
 
 <script>
 let wardrobe = [];
@@ -772,9 +774,82 @@ function exportData() {
   showToast('💾 已匯出');
 }
 function importData() { document.getElementById('importFile').click(); }
-function handleImport(e) {
+
+// ===== Notion ZIP / JSON 匯入 =====
+async function handleImport(e) {
   const file = e.target.files[0];
   if (!file) return;
+
+  // ZIP 檔（Notion 匯出）
+  if (file.name.toLowerCase().endsWith('.zip')) {
+    try {
+      showToast('📦 解析 ZIP 中...');
+      const zip = await JSZip.loadAsync(file);
+      let csvText = '', images = {};
+
+      // 搵 CSV 檔
+      for (const [path, entry] of Object.entries(zip.files)) {
+        if (entry.dir) continue;
+        if (path.toLowerCase().endsWith('.csv')) {
+          csvText = await entry.async('string');
+        }
+        // 收集圖片
+        if (/\.(png|jpg|jpeg|webp)$/i.test(path)) {
+          const blob = await entry.async('blob');
+          images[path.split('/').pop()] = await blobToDataURL(blob);
+        }
+      }
+
+      if (!csvText) { showToast('❌ ZIP 內搵唔到 CSV'); return; }
+
+      // 解析 CSV
+      const rows = parseCSV(csvText);
+      if (rows.length < 2) { showToast('❌ CSV 冇資料'); return; }
+
+      const headers = rows[0].map(h => h.trim());
+      const idx = {
+        name: headers.findIndex(h => /名稱|Name|title/i.test(h)),
+        cat: headers.findIndex(h => /分類|類別|Category/i.test(h)),
+        color: headers.findIndex(h => /顏色|Color/i.test(h)),
+        brand: headers.findIndex(h => /品牌|Brand/i.test(h)),
+        price: headers.findIndex(h => /價格|Price/i.test(h)),
+        weight: headers.findIndex(h => /重量|Weight/i.test(h)),
+        photo: headers.findIndex(h => /照片|圖片|Photo|Image/i.test(h)),
+      };
+
+      let added = 0;
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        const name = idx.name >= 0 ? (r[idx.name]||'').trim() : '';
+        if (!name) continue;
+        // 搵對應圖片
+        let photo = '';
+        if (idx.photo >= 0 && r[idx.photo]) {
+          const imgName = (r[idx.photo]||'').split('/').pop().trim();
+          photo = images[imgName] || '';
+        }
+        wardrobe.push({
+          name,
+          category: idx.cat >= 0 ? (r[idx.cat]||'其他').trim() : '其他',
+          color: idx.color >= 0 ? (r[idx.color]||'').trim() : '',
+          brand: idx.brand >= 0 ? (r[idx.brand]||'').trim() : '',
+          price: idx.price >= 0 ? (r[idx.price]||'').trim() : '',
+          weight: idx.weight >= 0 ? (r[idx.weight]||'').trim() : '',
+          photo
+        });
+        added++;
+      }
+      save();
+      renderAll();
+      showToast(`✅ 由 Notion ZIP 匯入咗 ${added} 件衣物！`);
+    } catch (err) {
+      console.error(err);
+      showToast('❌ ZIP 匯入失敗：' + err.message);
+    }
+    return;
+  }
+
+  // JSON 檔
   const reader = new FileReader();
   reader.onload = (ev) => {
     try {
@@ -789,6 +864,37 @@ function handleImport(e) {
   };
   reader.readAsText(file);
 }
+
+// CSV 解析（支援引號）
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"' && text[i+1] === '"') { cur += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+      else if (c === '\r') { /* skip */ }
+      else cur += c;
+    }
+  }
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+
+function blobToDataURL(blob) {
+  return new Promise((res) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.readAsDataURL(blob);
+  });
+}
+
 function resetData() {
   if (confirm('確定重置衣櫃？')) {
     lastBackup = JSON.stringify(wardrobe);
