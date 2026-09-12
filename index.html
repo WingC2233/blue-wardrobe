@@ -289,7 +289,7 @@ footer { text-align: center; margin-top: 20px; color: #a3bfd9; font-size: 0.78em
           <option value="鞋子">鞋子</option><option value="外套">外套</option>
           <option value="包包">包包</option><option value="帽子">帽子</option>
           <option value="飾品">飾品</option><option value="襪子">襪子</option>
-          <option value="其他">其他</option>
+          <option value="連身裙">連身裙</option><option value="其他">其他</option>
         </select>
       </div>
       <div class="form-field" style="min-width:70px">
@@ -380,6 +380,7 @@ const COUNT_CATEGORIES = [
   { key:'帽子', label:'帽子', def:1 },
   { key:'飾品', label:'飾品', def:1 },
   { key:'襪子', label:'襪子', def:3 },
+  { key:'連身裙', label:'連身裙', def:0 },
 ];
 
 const DEFAULT_ITEMS = [
@@ -392,7 +393,7 @@ const DEFAULT_ITEMS = [
   { name:'後背包', category:'包包', photo:'https://image.pollinations.ai/prompt/navy%20blue%20backpack%20ecommerce%20photo?width=256&height=256&seed=107&nologo=true', color:'深藍' },
   { name:'漁夫帽', category:'飾品', photo:'https://image.pollinations.ai/prompt/blue%20cap%20hat%20ecommerce%20photo?width=256&height=256&seed=108&nologo=true', color:'藍色' },
   { name:'太陽眼鏡', category:'飾品', photo:'https://image.pollinations.ai/prompt/black%20sunglasses%20ecommerce%20photo?width=256&height=256&seed=109&nologo=true', color:'黑色' },
-  { name:'藍色連身裙', category:'下身', photo:'https://image.pollinations.ai/prompt/blue%20dress%20flat%20lay%20ecommerce%20photo?width=256&height=256&seed=110&nologo=true', color:'藍色' },
+  { name:'藍色連身裙', category:'連身裙', photo:'https://image.pollinations.ai/prompt/blue%20dress%20flat%20lay%20ecommerce%20photo?width=256&height=256&seed=110&nologo=true', color:'藍色' },
   { name:'運動短褲', category:'下身', photo:'https://image.pollinations.ai/prompt/navy%20blue%20shorts%20flat%20lay%20ecommerce%20photo?width=256&height=256&seed=111&nologo=true', color:'深藍' },
   { name:'針織開衫', category:'外套', photo:'https://image.pollinations.ai/prompt/sky%20blue%20cardigan%20flat%20lay%20ecommerce%20photo?width=256&height=256&seed=112&nologo=true', color:'天藍' },
 ];
@@ -621,11 +622,14 @@ function generatePlan() {
 
   const tops = pool.filter(i => i.category === '上衣');
   const bottoms = pool.filter(i => i.category === '下身');
+  const dresses = pool.filter(i => i.category === '連身裙');
   const shoes = pool.filter(i => i.category === '鞋子');
-  const extras = pool.filter(i => ['外套','包包','飾品'].includes(i.category));
+  const extras = pool.filter(i => ['外套','包包','帽子','飾品'].includes(i.category));
 
-  if (!tops.length || !bottoms.length || !shoes.length) {
-    showToast('⚠️ 衣櫃唔夠衫！至少要有上衣、下身、鞋子');
+  // 有連身裙 = 唔需要上衣+下身
+  const hasDress = dresses.length > 0;
+  if (!shoes.length || (!hasDress && (!tops.length || !bottoms.length))) {
+    showToast('⚠️ 衣櫃唔夠衫！需要：鞋 + （連身裙 或 上衣+下身）');
     return;
   }
 
@@ -635,13 +639,17 @@ function generatePlan() {
 
   planOutfits = [];
   for (let d = 1; d <= days; d++) {
-    const top = pick(tops, d*2);
-    const bottom = pick(bottoms, d*3+1);
+    // 一半機會用連身裙（如果有）
+    const useDress = hasDress && (d % 2 === 1 || !tops.length || !bottoms.length);
+    const dress = useDress ? pick(dresses, d*11) : null;
+    const top = (!useDress && tops.length) ? pick(tops, d*2) : null;
+    const bottom = (!useDress && bottoms.length) ? pick(bottoms, d*3+1) : null;
     const shoe = pick(shoes, d*5);
     const extra = extras.length ? pick(extras, d*7) : null;
     planOutfits.push({
       day: d,
       items: {
+        連身裙: dress ? dresses.indexOf(dress) : null,
         上衣: top ? tops.indexOf(top) : null,
         下身: bottom ? bottoms.indexOf(bottom) : null,
         鞋子: shoe ? shoes.indexOf(shoe) : null,
