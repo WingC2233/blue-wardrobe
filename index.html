@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌊 藍色旅遊衣櫃 | Blue Wardrobe</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a6fc4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="旅遊衣櫃">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -132,6 +139,15 @@ header p { color: #6b8db5; font-size: 0.95em; }
 
 /* 本次行李 */
 .luggage-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pack-list { display: flex; flex-direction: column; gap: 6px; }
+.pack-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f7fbff; border-radius: 12px; cursor: pointer; border: 1px solid #e8f2fd; transition: all 0.2s; }
+.pack-row:hover { background: #eef7ff; }
+.pack-row input[type=checkbox] { width: 20px; height: 20px; accent-color: #1a6fc4; cursor: pointer; flex-shrink: 0; }
+.pack-row input[type=checkbox]:checked + img, .pack-row input[type=checkbox]:checked ~ span { opacity: 0.5; }
+.pack-name { font-weight: 600; font-size: 0.9em; flex: 1; }
+.pack-cat { font-size: 0.75em; color: #6b8db5; }
+.pack-days { font-size: 0.7em; color: #a3bfd9; white-space: nowrap; }
+@media print { .tabs, .form-row, .btn, footer, header, .card h3 button { display: none !important; } }
 .luggage-item {
   background: #eef7ff; border-radius: 12px; padding: 8px 14px;
   font-size: 0.85em; font-weight: 600; color: #1a6fc4;
@@ -149,7 +165,9 @@ header p { color: #6b8db5; font-size: 0.95em; }
 .w-item .emoji { font-size: 2.4em; display: block; margin-bottom: 5px; }
 .w-item .name { font-size: 0.82em; font-weight: 700; display: block; }
 .w-item .tag { font-size: 0.7em; opacity: 0.65; display: block; margin-top: 3px; }
-.w-item .delete { position: absolute; top: 6px; right: 8px; opacity: 0.4; font-size: 0.85em; cursor: pointer; }
+.w-item .delete { position: absolute; top: 6px; right: 8px; opacity: 0.4; font-size: 0.85em; cursor: pointer; z-index: 2; }
+.w-item .edit-btn { position: absolute; top: 6px; left: 8px; opacity: 0.4; font-size: 0.85em; cursor: pointer; z-index: 2; }
+.w-item .edit-btn:hover { opacity: 1; }
 .w-item .delete:hover { opacity: 1; }
 .w-item.used { opacity: 0.55; border-style: dashed; }
 .upload-btn {
@@ -427,6 +445,10 @@ function init() {
   if (plan) {
     try { planOutfits = JSON.parse(plan); } catch(e) { planOutfits = []; }
   }
+  try {
+    const pk = localStorage.getItem('blue_wardrobe_packing');
+    if (pk) packingState = JSON.parse(pk);
+  } catch(e) {}
   renderColorPrefs();
   renderCountRow();
   renderTripList();
@@ -582,9 +604,68 @@ function addItem() {
   }
 }
 function deleteItem(index) {
+  const removed = wardrobe[index];
   wardrobe.splice(index, 1);
   save();
   renderAll();
+  // Undo 提示（5 秒）
+  showUndo(`已刪除「${removed.name}」`, () => {
+    wardrobe.splice(index, 0, removed);
+    save();
+    renderAll();
+    showToast('↩️ 已復原');
+  });
+}
+
+let undoTimer = null;
+function showUndo(msg, restoreFn) {
+  let box = document.getElementById('undoBox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'undoBox';
+    box.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a3a5c;color:#fff;padding:12px 20px;border-radius:30px;font-size:0.85em;z-index:1000;display:flex;gap:12px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,0.25)';
+    document.body.appendChild(box);
+  }
+  box.innerHTML = `${msg} <b style="color:#7cc4ff;cursor:pointer" id="undoBtn">復原</b>`;
+  box.style.display = 'flex';
+  document.getElementById('undoBtn').onclick = () => {
+    restoreFn();
+    box.style.display = 'none';
+    clearTimeout(undoTimer);
+  };
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(() => { box.style.display = 'none'; }, 5000);
+}
+
+function editItem(idx) {
+  const item = wardrobe[idx];
+  if (!item) return;
+  // 用 prompt 簡單編輯（避免複雜 modal）
+  const newName = prompt('衣物名稱：', item.name);
+  if (newName === null) return;
+  const newCat = prompt('分類（上衣/下身/鞋子/外套/包包/帽子/飾品/襪子/連身裙/其他）：', item.category);
+  if (newCat === null) return;
+  const newColor = prompt('顏色：', item.color || '');
+  if (newColor === null) return;
+  const newBrand = prompt('品牌（可留空）：', item.brand || '');
+  if (newBrand === null) return;
+  const newPrice = prompt('價格（可留空）：', item.price || '');
+  if (newPrice === null) return;
+  const newWeight = prompt('重量g（可留空）：', item.weight || '');
+  if (newWeight === null) return;
+
+  wardrobe[idx] = {
+    ...item,
+    name: newName.trim() || item.name,
+    category: newCat.trim() || item.category,
+    color: newColor.trim(),
+    brand: newBrand.trim(),
+    price: newPrice.trim(),
+    weight: newWeight.trim()
+  };
+  save();
+  renderAll();
+  showToast('✅ 已更新');
 }
 function renderAll() {
   const grid = document.getElementById('wardrobeGrid');
@@ -595,6 +676,7 @@ function renderAll() {
       : `<span class="emoji">${item.emoji || '👕'}</span>`;
     return `<div class="w-item ${used?'used':''}">
       <span class="delete" onclick="deleteItem(${idx})">✕</span>
+      <span class="edit-btn" onclick="editItem(${idx})">✏️</span>
       ${visual}
       <span class="name">${item.name}</span>
       <span class="tag">${item.category}${item.color?' · '+item.color:''}</span>
@@ -716,26 +798,78 @@ function renderPlan() {
   });
 }
 
+let packingState = {};   // { itemKey: true }
+
 function renderLuggage() {
   const box = document.getElementById('luggageList');
   if (!planOutfits.length) { box.innerHTML = ''; return; }
-  // 統計計劃用咗幾多件
-  const used = {};
+
+  // 收集計劃用到嘅每一件衣物（去重）
+  const usedItems = {};  // key -> {item, cat, days:[]}
   planOutfits.forEach(o => {
     for (const [cat, itemIdx] of Object.entries(o.items)) {
       if (itemIdx === null || itemIdx === undefined) continue;
       const items = wardrobe.filter(i => i.category === cat);
       if (!items.length) continue;
       const item = items[itemIdx % items.length];
-      used[cat] = (used[cat]||0)+1;
+      const key = cat + '|' + item.name + '|' + (item.color||'');
+      if (!usedItems[key]) usedItems[key] = { item, cat, days: [] };
+      usedItems[key].days.push(o.day);
     }
   });
+
+  // 分類統計（計劃 vs 目標）
+  const catCount = {};
+  Object.values(usedItems).forEach(({cat}) => { catCount[cat] = (catCount[cat]||0)+1; });
   const counts = getCounts();
-  box.innerHTML = COUNT_CATEGORIES.map(c => {
-    const planned = used[c.key] || 0;
+  const statsHtml = COUNT_CATEGORIES.map(c => {
+    const planned = catCount[c.key] || 0;
     const target = counts[c.key] || 0;
-    return `<div class="luggage-item">${c.label} × ${planned}/${target}</div>`;
+    const color = (target && planned >= target) ? '#58a05c' : '#4a6f94';
+    return `<div class="luggage-item" style="color:${color}">${c.label} × ${planned}${target?'/'+target:''}</div>`;
   }).join('');
+
+  // Checklist
+  const total = Object.keys(usedItems).length;
+  const packed = Object.keys(usedItems).filter(k => packingState[k]).length;
+
+  window.__packKeys = Object.keys(usedItems);
+  let listHtml = Object.entries(usedItems).map(([key, {item, cat, days}], id) => {
+    const checked = packingState[key] ? 'checked' : '';
+    const visual = item.photo
+      ? `<img src="${item.photo}" style="width:34px;height:34px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'">`
+      : `<span style="font-size:1.4em">${item.emoji||'👕'}</span>`;
+    return `<label class="pack-row">
+      <input type="checkbox" ${checked} onchange="togglePackIdx(${id})">
+      ${visual}
+      <span class="pack-name">${item.name}</span>
+      <span class="pack-cat">${cat}${item.color?' · '+item.color:''}</span>
+      <span class="pack-days">Day ${days.join(',')}</span>
+    </label>`;
+  }).join('');
+
+  box.innerHTML = `
+    <div style="margin-bottom:10px;font-weight:700;color:#1a6fc4">
+      🧳 執行李進度：${packed} / ${total} 件
+      <button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="window.print()">🖨️ 列印清單</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">${statsHtml}</div>
+    <div class="pack-list">${listHtml}</div>
+  `;
+}
+
+function togglePackIdx(id) {
+  const key = (window.__packKeys || [])[id];
+  if (!key) return;
+  packingState[key] = !packingState[key];
+  try { localStorage.setItem('blue_wardrobe_packing', JSON.stringify(packingState)); } catch(e) {}
+  renderLuggage();
+}
+
+function togglePack(key) {
+  packingState[key] = !packingState[key];
+  try { localStorage.setItem('blue_wardrobe_packing', JSON.stringify(packingState)); } catch(e) {}
+  renderLuggage();
 }
 
 function setItem(outfitIdx, category, value) {
