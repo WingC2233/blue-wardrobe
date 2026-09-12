@@ -417,7 +417,8 @@ function imgFallback(el) {
 }
 
 function init() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  let saved = null;
+  try { saved = localStorage.getItem(STORAGE_KEY); } catch(e) { storageOK = false; }
   if (saved) {
     try { wardrobe = JSON.parse(saved); } catch(e) { wardrobe = [...DEFAULT_ITEMS]; }
   } else { wardrobe = [...DEFAULT_ITEMS]; }
@@ -430,8 +431,34 @@ function init() {
   renderTripList();
   renderAll();
   renderPlan();
+
+  // 測試 localStorage 是否可用
+  try {
+    localStorage.setItem('__test__', '1');
+    localStorage.removeItem('__test__');
+  } catch (e) {
+    storageOK = false;
+    const warn = document.createElement('div');
+    warn.style.cssText = 'background:#fff3cd;color:#856404;padding:12px 16px;border-radius:12px;margin:12px 0;font-size:0.85em;border:1px solid #ffeeba';
+    warn.innerHTML = '⚠️ <b>你嘅瀏覽器封鎖咗儲存功能</b>（可能係私隱/無痕模式）。<br>衣物只會保留喺今次瀏覽，refresh 後會消失。<br>👉 建議：關閉無痕模式，或用 Chrome 開啟。';
+    document.querySelector('.container').insertBefore(warn, document.querySelector('.container').children[1]);
+  }
 }
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(wardrobe)); }
+let storageOK = true;
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(wardrobe));
+    storageOK = true;
+  } catch (err) {
+    storageOK = false;
+    console.error('save failed:', err);
+    if (err && err.name === 'QuotaExceededError') {
+      showToast('⚠️ 瀏覽器儲存空間滿咗！請減少相片或清除舊資料');
+    } else {
+      showToast('⚠️ 儲存唔到（可能係私隱模式）：資料只會保留喺今次瀏覽');
+    }
+  }
+}
 function savePlan() { localStorage.setItem(PLAN_KEY, JSON.stringify(planOutfits)); }
 
 function showToast(msg) {
@@ -537,16 +564,21 @@ function addItem() {
   const price = (document.getElementById('itemPrice')||{}).value || '';
   const weight = (document.getElementById('itemWeight')||{}).value || '';
   if (!name) { showToast('⚠️ 請輸入衣物名稱！'); return; }
-  wardrobe.push({ name, category, photo: currentPhotoData || '', color, brand: brand.trim(), price, weight });
-  save();
-  document.getElementById('itemName').value='';
-  document.getElementById('itemColor').value='';
-  document.getElementById('itemBrand').value='';
-  document.getElementById('itemPrice').value='';
-  document.getElementById('itemWeight').value='';
-  clearPhoto();
-  renderAll();
-  showToast('✅ 已新增');
+  try {
+    wardrobe.push({ name, category, photo: currentPhotoData || '', color, brand: brand.trim(), price, weight });
+    save();
+    document.getElementById('itemName').value='';
+    document.getElementById('itemColor').value='';
+    document.getElementById('itemBrand').value='';
+    document.getElementById('itemPrice').value='';
+    document.getElementById('itemWeight').value='';
+    clearPhoto();
+    renderAll();
+    showToast('✅ 已新增：' + name);
+  } catch (err) {
+    console.error('addItem failed:', err);
+    showToast('❌ 新增失敗：' + err.message);
+  }
 }
 function deleteItem(index) {
   wardrobe.splice(index, 1);
